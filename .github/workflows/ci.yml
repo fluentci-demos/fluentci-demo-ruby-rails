@@ -1,0 +1,44 @@
+name: ci
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup FluentCI
+        uses: fluentci-io/setup-fluentci@v5
+        with:
+          wasm: true
+          plugin: postgres
+          args: |
+            start
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_USER: postgres
+          POSTGRES_DB: demo-rails5_test
+      - name: check style + security
+        run: |
+          fluentci run --wasm ruby bundle_exec rubocop
+          fluentci run --wasm ruby bundle_exec brakeman
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUBY_VERSION: 2.7.3
+      - name: RSpec - model tests
+        run: |
+          fluentci run --wasm ruby bundle_exec rspec spec/models
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: RSpec - controller tests
+        run: |
+          fluentci run --wasm ruby bundle_exec rspec spec/controllers
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: RSpec - feature specs
+        run: |
+          fluentci run --wasm ruby bundle_exec rake db:setup
+          fluentci run --wasm ruby bundle_exec rspec spec/features
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
