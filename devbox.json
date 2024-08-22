@@ -1,6 +1,6 @@
 {
   "packages": [
-    "ruby_3_3@latest",
+    "ruby_3_1@latest",
     "bundler@latest",
     "nodejs-19_x@latest",
     "yarn@latest"
