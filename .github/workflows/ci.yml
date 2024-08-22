@@ -21,24 +21,18 @@ jobs:
           POSTGRES_DB: demo_rails5_test
       - name: check style + security
         run: |
+          fluentci run --wasm devbox setup
+          devbox init
+          devbox add ruby@$RUBY_VERSION
           fluentci run --wasm ruby bundle_exec rubocop
-          fluentci run --wasm ruby bundle_exec brakeman
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUBY_VERSION: 2.7.3
-      - name: RSpec - model tests
+          RUBY_VERSION: 3.1.4
+      - name: Run tests
         run: |
-          fluentci run --wasm ruby bundle_exec rspec spec/models
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: RSpec - controller tests
-        run: |
-          fluentci run --wasm ruby bundle_exec rspec spec/controllers
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: RSpec - feature specs
-        run: |
-          fluentci run --wasm ruby bundle_exec rake db:setup
-          fluentci run --wasm ruby bundle_exec rspec spec/features
+          fluentci run --wasm ruby bundle_exec rails db:migrate
+          fluentci run --wasm ruby bundle_exec rails db:seed
+          fluentci run --wasm ruby bundle_exec rails test
+          fluentci run --wasm ruby bundle_exec rspec spec
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
