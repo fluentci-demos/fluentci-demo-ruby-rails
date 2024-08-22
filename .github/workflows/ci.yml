@@ -18,7 +18,7 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           POSTGRES_USER: postgres
-          POSTGRES_DB: demo-rails5_test
+          POSTGRES_DB: demo_rails5_test
       - name: check style + security
         run: |
           fluentci run --wasm ruby bundle_exec rubocop
