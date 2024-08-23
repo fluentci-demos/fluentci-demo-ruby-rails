@@ -6,7 +6,8 @@
     "yarn@latest",
     "pkg-config@latest",
     "gcc@latest",
-    "gnumake@latest"
+    "gnumake@latest",
+    "postgresql@latest"
   ],
   "shell": {
     "init_hook": [
